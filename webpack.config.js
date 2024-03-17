@@ -14,14 +14,14 @@ module.exports = {
         maxAssetSize: 4000000,
         maxEntrypointSize: 4000000,
     },
-    module: {        
+    module: {
         rules: [
             // Necessary in order to use TypeScript
             {
                 test: /\.ts$|tsx/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
-            },            
+            },
             {
                 test: /\.css$/,
                 use: [
@@ -36,6 +36,10 @@ module.exports = {
         ],
     },
     resolve: {
+        fallback: {
+            fs: false,
+            readline: false,
+        },
         // Alway keep '.js' even though you don't use it.
         // https://github.com/webpack/webpack-dev-server/issues/720#issuecomment-268470989
         extensions: ['.tsx', '.ts', '.js'],
@@ -61,7 +65,7 @@ module.exports = {
         // Extract CSS to separate file
         new MiniCssExtractPlugin({
             filename: 'css/mystyles.css',
-        }),        
+        }),
     ],
     devServer: {
         // keep port in sync with VS Code launch.json

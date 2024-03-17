@@ -1,5 +1,5 @@
 import { TreeView, fail } from 'fluid-framework';
-import { createAzureOpenAILanguageModel } from 'typechat/dist/model';
+import { createAzureOpenAILanguageModel } from 'typechat';
 import { App } from '../schema/app_schema';
 
 export function getPrompter(
