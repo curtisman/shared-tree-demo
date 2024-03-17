@@ -1,6 +1,9 @@
-import { fail } from 'fluid-framework';
-import { createAzureOpenAILanguageModel } from 'typechat/dist/model';
+import { createAzureOpenAILanguageModel } from 'typechat';
 import { App } from '../schema/app_schema';
+
+function fail(message: string): never {
+    throw new Error(message);
+}
 
 export function getPrompter(
     prePrompt = ''
