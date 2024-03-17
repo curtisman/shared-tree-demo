@@ -34,21 +34,25 @@ export function ReactApp(props: {
                 connectionState={connectionState}
                 fluidMembers={fluidMembers}
                 clientId={currentUser}
-                insertTemplate={props.insertTemplate}
             />
-            <div className="flex h-[calc(100vh-48px)] flex-row ">
-                <Canvas
-                    appTree={props.appTree}
-                    sessionTree={props.sessionTree}
-                    audience={props.audience}
-                    container={props.container}
-                    fluidMembers={fluidMembers}
-                    currentUser={currentUser}
-                    setCurrentUser={setCurrentUser}
-                    setConnectionState={setConnectionState}
-                    setSaved={setSaved}
-                    setFluidMembers={setFluidMembers}
-                />
+            <div className="flex h-[calc(100vh-48px)] flex-row">
+                <div className="grow">
+                    <Canvas
+                        appTree={props.appTree}
+                        sessionTree={props.sessionTree}
+                        audience={props.audience}
+                        container={props.container}
+                        fluidMembers={fluidMembers}
+                        currentUser={currentUser}
+                        setCurrentUser={setCurrentUser}
+                        setConnectionState={setConnectionState}
+                        setSaved={setSaved}
+                        setFluidMembers={setFluidMembers}
+                    />
+                </div>
+                <div className="shrink-0 w-400 bg-gray-200">
+                    <Copilot insertTemplate={props.insertTemplate} />
+                </div>
             </div>
         </div>
     );
@@ -59,6 +63,17 @@ export function Header(props: {
     connectionState: string;
     fluidMembers: string[];
     clientId: string;
+}): JSX.Element {
+    return (
+        <div className="h-[48px] flex shrink-0 flex-row items-center justify-between bg-green-600 text-base text-white z-40 w-full">
+            <div className="flex m-2">Brainstorm</div>
+            {props.saved ? 'saved' : 'not saved'} | {props.connectionState} | users:{' '}
+            {props.fluidMembers.length}
+        </div>
+    );
+}
+
+export function Copilot(props: {
     insertTemplate: (prompt: string) => Promise<void>;
 }): JSX.Element {
     const [templatePrompt, setTemplatePrompt] = useState(
@@ -66,22 +81,18 @@ export function Header(props: {
     );
     const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
     const black =
-        'h-[48px] flex shrink-0 flex-row items-center justify-between bg-black text-base text-white z-40 w-full';
+        'flex flex-row items-center justify-between underline text-black z-40 w-full m-2';
     const red =
-        'h-[48px] flex shrink-0 flex-row items-center justify-between bg-green-600 text-base text-white z-40 w-full';
+        'flex flex-row items-center justify-between underline bg-green-600 text-white z-40 w-full m-2';
     return (
-        <div className={isLoadingTemplate ? red : black}>
-            <div className="flex m-2">
+        <div className="flex flex-col w-400 h-full">
+            <div className={isLoadingTemplate ? red : black}>
                 {isLoadingTemplate
-                    ? 'LOADING TEMPLATE... Yes it takes a while...'
-                    : 'Brainstorm'}
+                    ? 'Generating content. May takes a while...'
+                    : 'Describe the content to be inserted'}
             </div>
-            <div className="flex m-2 ">
-                {props.saved ? 'saved' : 'not saved'} | {props.connectionState} |
-                users: {props.fluidMembers.length}
-            </div>
-            <input
-                className="flex m-2 text-black"
+            <textarea
+                className="flex h-full self-stretch m-2 text-black"
                 value={templatePrompt}
                 id="insertTemplateInput"
                 aria-label="Describe the template to be inserted"
@@ -89,17 +100,20 @@ export function Header(props: {
                     setTemplatePrompt(e.target.value);
                 }}
             />
-            <button
-                id="insertTemplateButton"
-                onClick={() => {
-                    setIsLoadingTemplate(true);
-                    props
-                        .insertTemplate(templatePrompt)
-                        .then(() => setIsLoadingTemplate(false));
-                }}
-            >
-                Generate Template
-            </button>
+            <div className="flex flex-row">
+                <button
+                    className="bg-black text-white hover:bg-gray-600 font-bold px-2 py-1 rounded inline-flex items-center h-6 m-2 align-self-end"
+                    id="insertTemplateButton"
+                    onClick={() => {
+                        setIsLoadingTemplate(true);
+                        props
+                            .insertTemplate(templatePrompt)
+                            .then(() => setIsLoadingTemplate(false));
+                    }}
+                >
+                    Generate content
+                </button>
+            </div>
         </div>
     );
 }
